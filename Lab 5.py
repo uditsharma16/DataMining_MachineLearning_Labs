@@ -141,3 +141,33 @@ plt.legend(loc="lower right")
 plt.tight_layout()
 plt.savefig('06_10.png', dpi=300)
 plt.show()
+
+from sklearn.neural_network import MLPClassifier
+
+pipe_mlp = make_pipeline(StandardScaler(), MLPClassifier()
+                         )
+
+import warnings
+
+warnings.filterwarnings("ignore")
+
+# param_grid=[{'mlpclassifier__hidden_layer_sizes': [(20,),(19,1),(18,2)]}]
+param_grid = [{'mlpclassifier__n_iter_no_change': [1, 2, 3, 4, 5],
+               'mlpclassifier__hidden_layer_sizes': [(20,), (19, 1), (18, 2)]}]
+#
+gs = GridSearchCV(estimator=pipe_mlp,
+                  param_grid=param_grid,
+                  scoring='accuracy',
+                  cv=2)
+
+scores = []
+kfold = StratifiedKFold(n_splits=10, random_state=1).split(X_train, y_train)
+for k, (train, test) in enumerate(kfold):
+    gs.fit(X_train[train], y_train[train])
+    score = gs.score(X_train[test], y_train[test])
+    scores.append(score)
+    print('Fold: %2d, Class dist.: %s, Acc: %.3f' % (k + 1, np.bincount(y_train[train]), score))
+scores = cross_val_score(gs, X_train, y_train, scoring='accuracy', cv=10)
+print('CV accuracy: %.3f +/- %.3f' % (np.mean(scores), np.std(scores)))
+
+
