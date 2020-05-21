@@ -23,7 +23,8 @@ from IPython.display import Image
 # ## K-means clustering using scikit-learn
 
 
-
+from tempfile import mkdtemp
+from shutil import rmtree
 from sklearn.datasets import make_blobs
 
 # X, y = make_blobs(n_samples=150,
@@ -36,72 +37,113 @@ import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
-X = pd.read_excel(r'C:\Users\udit sharma\Desktop\Aut\Data Mining and Machine Learning\Labs\Iris.xlsx')
-
+df = pd.read_excel(r'C:\Users\udit sharma\Desktop\Aut\Data Mining and Machine Learning\Labs\Iris.xlsx')
+nrow,ncol=df.shape
+Y=df.iloc[:,-1]
+X=df.iloc[:,0:ncol-1]
 print(X.head())
-from sklearn.cluster import KMeans
 
 
 
 
-km= make_pipeline(StandardScaler(), PCA(n_components=2),KMeans(n_clusters=3,
-            init='random',
-            n_init=10,
-            max_iter=300,
-            tol=1e-04,
-            random_state=0)
-                      )
-y_km = km.fit_predict(X)
+
 
 
 
 import matplotlib.pyplot as plt
 
-# plt.scatter(X[:, 0], X[:, 1],
-#             c='white', marker='o', edgecolor='black', s=50)
-# plt.grid()
-# plt.tight_layout()
-# # #plt.savefig('06.01_01.png', dpi=300)
-# plt.show()
-#
-#
-#
-#
-#
+plt.scatter(X.iloc[:, 0], X.iloc[:,1],
+            c='white', marker='o', edgecolor='black', s=50)
+plt.scatter(X.iloc[:, 2], X.iloc[:,3],
+            c='blue', marker='o', edgecolor='black', s=50)
+# plt.scatter(X.iloc[:, 2], Y,
+#             c='green', marker='o', edgecolor='black', s=50)
+# plt.scatter(X.iloc[:, 3], Y,
+#             c='red', marker='o', edgecolor='black', s=50)
+plt.grid()
+plt.tight_layout()
+# #plt.savefig('06.01_01.png', dpi=300)
+plt.show()
+
+from sklearn.cluster import KMeans
+
+
+# kms=KMeans(n_clusters=3,
+#             init='random',
+#             n_init=10,
+#             max_iter=300,
+#             tol=1e-04,
+#             random_state=0)
+import sklearn
+kms=KMeans(n_clusters=3,
+            init='random',
+            n_init=10,
+            max_iter=300,
+            tol=1e-04,
+            random_state=0)
+km1=KMeans(n_clusters=3,
+            init='random',
+            n_init=10,
+            max_iter=300,
+            tol=1e-04,
+            random_state=0)
+km1.fit_predict(X)
+cachedir = mkdtemp()
+km= sklearn.pipeline.Pipeline([('SS',StandardScaler()),('PCA',PCA(n_components=4)),('kmaa',kms)],memory=cachedir)
+
+# km= sklearn.pipeline.Pipeline(StandardScaler(),PCA(n_components=2),KMeans(n_clusters=3,
+#             init='random',
+#             n_init=10,
+#             max_iter=300,
+#             tol=1e-04,
+#             random_state=0))
+
+# km=KMeans(n_clusters=3,
+#             init='random',
+#             n_init=10,
+#             max_iter=300,
+#             tol=1e-04,
+#             random_state=0)
+y_km = km.fit_predict(X)
+y_km1=km[2].fit(X)
+# abc=kms.fit(X)
 
 
 
-# plt.scatter(X[y_km == 0, 0],
-#             X[y_km == 0, 1],
-#             s=50, c='lightgreen',
-#             marker='s', edgecolor='black',
-#             label='cluster 1')
-# plt.scatter(X[y_km == 1, 0],
-#             X[y_km == 1, 1],
-#             s=50, c='orange',
-#             marker='o', edgecolor='black',
-#             label='cluster 2')
-# plt.scatter(X[y_km == 2, 0],
-#             X[y_km == 2, 1],
-#             s=50, c='lightblue',
-#             marker='v', edgecolor='black',
-#             label='cluster 3')
-# plt.scatter(km.cluster_centers_[:, 0],
-#             km.cluster_centers_[:, 1],
-#             s=250, marker='*',
-#             c='red', edgecolor='black',
-#             label='centroids')
-# plt.legend(scatterpoints=1)
-# plt.grid()
-# plt.tight_layout()
-# # #plt.savefig('06_02.png', dpi=300)
-# plt.show()
+
+# print(km.named_steps['kmaa'].cluster_centers_)
+
+plt.scatter(X.iloc[y_km == 0, 0],
+            X.iloc[y_km == 0, 1],
+            s=50, c='lightgreen',
+            marker='s', edgecolor='black',
+            label='cluster 1')
+plt.scatter(X.iloc[y_km == 1, 0],
+            X.iloc[y_km == 1, 1],
+            s=50, c='orange',
+            marker='o', edgecolor='black',
+            label='cluster 2')
+plt.scatter(X.iloc[y_km == 2, 0],
+            X.iloc[y_km == 2, 1],
+            s=50, c='lightblue',
+            marker='v', edgecolor='black',
+            label='cluster 3')
+plt.scatter(km.named_steps['kmaa'].cluster_centers_[:, 0],
+            km.named_steps['kmaa'].cluster_centers_[:, 1],
+            s=250, marker='*',
+            c='red', edgecolor='black',
+            label='centroids')
+plt.legend(scatterpoints=1)
+plt.grid()
+plt.tight_layout()
+# #plt.savefig('06_02.png', dpi=300)
+plt.show()
 
 
 
 
 
-print('Distortion: %.2f' % km.inertia_)
+print('Distortion: %.2f' % km.named_steps['kmaa'].inertia_)
 
 
 
@@ -169,40 +211,41 @@ plt.show()
 
 
 # Comparison to "bad" clustering:
-
-
-
-
-km = KMeans(n_clusters=2,
+kms = KMeans(n_clusters=2,
             init='k-means++',
             n_init=10,
             max_iter=300,
             tol=1e-04,
             random_state=0)
-y_km = km.fit_predict(X)
+km= sklearn.pipeline.Pipeline([('SS',StandardScaler()),('PCA',PCA(n_components=4)),('kmaa',kms)],memory=cachedir)
 
-# plt.scatter(X[y_km == 0, 0],
-#             X[y_km == 0, 1],
-#             s=50,
-#             c='lightgreen',
-#             edgecolor='black',
-#             marker='s',
-#             label='cluster 1')
-# plt.scatter(X[y_km == 1, 0],
-#             X[y_km == 1, 1],
-#             s=50,
-#             c='orange',
-#             edgecolor='black',
-#             marker='o',
-#             label='cluster 2')
-#
-# plt.scatter(km.cluster_centers_[:, 0], km.cluster_centers_[:, 1],
-#             s=250, marker='*', c='red', label='centroids')
-# plt.legend()
-# plt.grid()
-# plt.tight_layout()
-# #plt.savefig('06_05.png', dpi=300)
-# plt.show()
+
+
+y_km = km.fit_predict(X)
+kms.fit(X)
+
+plt.scatter(X.iloc[y_km == 0, 0],
+            X.iloc[y_km == 0, 1],
+            s=50,
+            c='lightgreen',
+            edgecolor='black',
+            marker='s',
+            label='cluster 1')
+plt.scatter(X.iloc[y_km == 1, 0],
+            X.iloc[y_km == 1, 1],
+            s=50,
+            c='orange',
+            edgecolor='black',
+            marker='o',
+            label='cluster 2')
+
+plt.scatter(km.named_steps['kmaa'].cluster_centers_[:, 0], km.named_steps['kmaa'].cluster_centers_[:, 1],
+            s=250, marker='*', c='red', label='centroids')
+plt.legend()
+plt.grid()
+plt.tight_layout()
+#plt.savefig('06_05.png', dpi=300)
+plt.show()
 
 
 
@@ -233,4 +276,5 @@ plt.xlabel('Silhouette coefficient')
 plt.tight_layout()
 #plt.savefig('06_06.png', dpi=300)
 plt.show()
-
+#
+rmtree(cachedir)

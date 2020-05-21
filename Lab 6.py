@@ -35,14 +35,14 @@ X, y = make_blobs(n_samples=150,
 
 
 
-
+print(X)
 import matplotlib.pyplot as plt
 
 plt.scatter(X[:, 0], X[:, 1],
             c='white', marker='o', edgecolor='black', s=50)
 plt.grid()
 plt.tight_layout()
-plt.savefig('06_01.png', dpi=300)
+#plt.savefig('06_01.png', dpi=300)
 plt.show()
 
 
@@ -84,7 +84,7 @@ plt.scatter(km.cluster_centers_[:, 0],
 plt.legend(scatterpoints=1)
 plt.grid()
 plt.tight_layout()
-plt.savefig('06_02.png', dpi=300)
+#plt.savefig('06_02.png', dpi=300)
 plt.show()
 
 
@@ -109,7 +109,7 @@ plt.plot(range(1, 11), distortions, marker='o')
 plt.xlabel('Number of clusters')
 plt.ylabel('Distortion')
 plt.tight_layout()
-plt.savefig('06_03.png', dpi=300)
+#plt.savefig('06_03.png', dpi=300)
 plt.show()
 
 
@@ -154,7 +154,7 @@ plt.ylabel('Cluster')
 plt.xlabel('Silhouette coefficient')
 
 plt.tight_layout()
-plt.savefig('06_04.png', dpi=300)
+#plt.savefig('06_04.png', dpi=300)
 plt.show()
 
 
@@ -191,7 +191,7 @@ plt.scatter(km.cluster_centers_[:, 0], km.cluster_centers_[:, 1],
 plt.legend()
 plt.grid()
 plt.tight_layout()
-plt.savefig('06_05.png', dpi=300)
+#plt.savefig('06_05.png', dpi=300)
 plt.show()
 
 
@@ -221,6 +221,6 @@ plt.ylabel('Cluster')
 plt.xlabel('Silhouette coefficient')
 
 plt.tight_layout()
-plt.savefig('06_06.png', dpi=300)
+#plt.savefig('06_06.png', dpi=300)
 plt.show()
 
