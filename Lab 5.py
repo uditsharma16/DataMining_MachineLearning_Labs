@@ -88,7 +88,7 @@ for i in range(confmat.shape[0]):
 plt.xlabel('Predicted label')
 plt.ylabel('True label')
 plt.tight_layout()
-plt.savefig('06_09.png', dpi=300)
+plt.savefig('Images/05_02.png', dpi=300)
 plt.show()
 #
 #
@@ -139,7 +139,7 @@ plt.xlabel('false positive rate')
 plt.ylabel('true positive rate')
 plt.legend(loc="lower right")
 plt.tight_layout()
-plt.savefig('06_10.png', dpi=300)
+plt.savefig('Images/05_1.png', dpi=300)
 plt.show()
 
 from sklearn.neural_network import MLPClassifier
